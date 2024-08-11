@@ -36,9 +36,14 @@ Multer.prototype._makeMiddleware = function (fields, fileStrategy) {
     })
 
     function wrappedFileFilter (req, file, cb) {
-      if ((filesLeft[file.fieldname] || 0) <= 0) {
-        return cb(new MulterError('LIMIT_UNEXPECTED_FILE', file.fieldname))
-      }
+      console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+      console.log("file.fieldname->", file.fieldname)
+      console.log("filesLeft->", filesLeft)
+      console.log("filesLeft[file.fieldname]->", filesLeft[file.fieldname])
+      console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+      // if ((filesLeft[file.fieldname] || 0) <= 0) {
+      //   return cb(new MulterError('LIMIT_UNEXPECTED_FILE', file.fieldname))
+      // }
 
       filesLeft[file.fieldname] -= 1
       fileFilter(req, file, cb)
