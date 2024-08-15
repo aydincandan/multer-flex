@@ -4,11 +4,11 @@ var diskStorage = require('./storage/disk')
 var memoryStorage = require('./storage/memory')
 var MulterError = require('./lib/multer-error')
 
-function allowAll (req, file, cb) {
+function allowAll(req, file, cb) {
   cb(null, true)
 }
 
-function Multer (options) {
+function Multer(options) {
   if (options.storage) {
     this.storage = options.storage
   } else if (options.dest) {
@@ -17,13 +17,14 @@ function Multer (options) {
     this.storage = memoryStorage()
   }
 
+  this.verbose = options.verbose
   this.limits = options.limits
   this.preservePath = options.preservePath
   this.fileFilter = options.fileFilter || allowAll
 }
 
 Multer.prototype._makeMiddleware = function (fields, fileStrategy) {
-  function setup () {
+  function setup() {
     var fileFilter = this.fileFilter
     var filesLeft = Object.create(null)
 
@@ -35,21 +36,17 @@ Multer.prototype._makeMiddleware = function (fields, fileStrategy) {
       }
     })
 
-    function wrappedFileFilter (req, file, cb) {
-      console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
-      console.log("file.fieldname->", file.fieldname)
-      console.log("filesLeft->", filesLeft)
-      console.log("filesLeft[file.fieldname]->", filesLeft[file.fieldname])
-      console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
-      // if ((filesLeft[file.fieldname] || 0) <= 0) {
-      //   return cb(new MulterError('LIMIT_UNEXPECTED_FILE', file.fieldname))
-      // }
+    function wrappedFileFilter(req, file, cb) {
+      if ((filesLeft[file.fieldname] || 0) <= 0) {
+        // console.log("return cb(new MulterError('LIMIT_UNEXPECTED_FILE', file.fieldname))")
+      }
 
       filesLeft[file.fieldname] -= 1
       fileFilter(req, file, cb)
     }
 
     return {
+      verbose: this.verbose,
       limits: this.limits,
       preservePath: this.preservePath,
       storage: this.storage,
@@ -78,8 +75,9 @@ Multer.prototype.none = function () {
 }
 
 Multer.prototype.any = function () {
-  function setup () {
+  function setup() {
     return {
+      verbose: this.verbose,
       limits: this.limits,
       preservePath: this.preservePath,
       storage: this.storage,
@@ -91,7 +89,7 @@ Multer.prototype.any = function () {
   return makeMiddleware(setup.bind(this))
 }
 
-function multer (options) {
+function multer(options) {
   if (options === undefined) {
     return new Multer({})
   }
