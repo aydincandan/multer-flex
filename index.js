@@ -111,3 +111,4 @@ module.exports = multer
 module.exports.diskStorage = diskStorage
 module.exports.memoryStorage = memoryStorage
 module.exports.MulterError = MulterError
+module.exports.flex = true
