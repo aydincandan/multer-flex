@@ -29,7 +29,7 @@ Multer.prototype._makeMiddleware = function (fields, fileStrategy) {
     var filesLeft = Object.create(null)
 
     fields.forEach(function (field) {
-      console.log("fields.forEach:", { field })
+      console.log("node_modules/multer-flex _makeMiddleware setup() fields.forEach:", { field })
       if (typeof field.maxCount === 'number') {
         filesLeft[field.name] = field.maxCount
       } else {
